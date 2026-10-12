@@ -350,8 +350,6 @@ namespace noctalia::config::schema {
   // stable pointer (the tables are static constexpr) instead of an array ref.
   template <typename Enum>
   std::optional<Enum> enumLookup(const EnumOption<Enum>* opts, std::size_t n, std::string_view key) {
-    // Codex generated: keep lookup case-sensitive so every enum preserves its
-    // documented canonical spelling.
     for (std::size_t i = 0; i < n; ++i) {
       if (opts[i].key == key) {
         return opts[i].value;

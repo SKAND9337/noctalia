@@ -28,8 +28,6 @@ namespace noctalia::config {
     constexpr int kPluginAutoUpdateModeMigrationVersion = 13;
     constexpr int kCalendarEventFormatsMigrationVersion = 14;
     constexpr int kDockMonitorOverridesMigrationVersion = 15;
-    // Codex generated: no migration 16 exists. The temporary newan1..newan5
-    // aliases never shipped, so accepting or migrating them would be dead code.
     constexpr std::int64_t kMaxBarRadius = 500;
     constexpr std::array<std::string_view, 5> kBarRadiusKeys = {
         "radius", "radius_top_left", "radius_top_right", "radius_bottom_left", "radius_bottom_right",

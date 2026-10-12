@@ -98,7 +98,6 @@ namespace {
       params.cellSize = randomFloat(0.02F, 0.06F);
       params.centerX = randomFloat(0.2F, 0.8F);
       params.centerY = randomFloat(0.2F, 0.8F);
-      // Codex generated: Honeycomb must not inherit Vortex's parameter setup.
       break;
     // Contributed section: custom transition animation parameter randomization (Vortex, Pixel, Diamond, Golden, Melt)
     case WallpaperTransition::Vortex:

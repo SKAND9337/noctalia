@@ -616,8 +616,6 @@ template <typename T> struct EnumOption {
 
 template <typename T, std::size_t N>
 constexpr std::optional<T> enumFromKey(const EnumOption<T> (&options)[N], std::string_view key) {
-  // Codex generated: enum keys intentionally require an exact canonical match;
-  // transition aliases are not accepted because they were never released.
   for (const auto& opt : options) {
     if (opt.key == key) {
       return opt.value;
