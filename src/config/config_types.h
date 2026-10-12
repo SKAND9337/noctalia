@@ -616,31 +616,11 @@ template <typename T> struct EnumOption {
 
 template <typename T, std::size_t N>
 constexpr std::optional<T> enumFromKey(const EnumOption<T> (&options)[N], std::string_view key) {
+  // Codex generated: enum keys intentionally require an exact canonical match;
+  // transition aliases are not accepted because they were never released.
   for (const auto& opt : options) {
     if (opt.key == key) {
       return opt.value;
-    }
-  }
-
-  // Contributed section: support legacy transition animation aliases (newan1..newan5 -> vortex..melt)
-  std::string_view canonicalKey{};
-  if (key == "newan1") {
-    canonicalKey = "vortex";
-  } else if (key == "newan2") {
-    canonicalKey = "pixel";
-  } else if (key == "newan3") {
-    canonicalKey = "diamond";
-  } else if (key == "newan4") {
-    canonicalKey = "golden";
-  } else if (key == "newan5") {
-    canonicalKey = "melt";
-  }
-
-  if (!canonicalKey.empty()) {
-    for (const auto& opt : options) {
-      if (opt.key == canonicalKey) {
-        return opt.value;
-      }
     }
   }
 

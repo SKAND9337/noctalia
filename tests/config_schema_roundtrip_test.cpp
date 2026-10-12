@@ -689,7 +689,8 @@ location = "https://example.invalid/bad"
     // Invalid transition values are surfaced instead of silently changing the
     // configured effect pool.
     {
-      auto t = toml::parse(R"(transition = ["fade", "unknown", 3])");
+      // Codex generated: enum values are canonical and case-sensitive.
+      auto t = toml::parse(R"(transition = ["fade", "Fade", "unknown", 3])");
       LockscreenConfig lockscreen{};
       Diagnostics d;
       readInto(t, lockscreen, lockscreenSchema(), "lockscreen", d);
@@ -699,25 +700,8 @@ location = "https://example.invalid/bad"
       const auto warnings = std::ranges::count_if(d.entries, [](const Diagnostics::Entry& entry) {
         return entry.severity == Diagnostics::Severity::Warning && entry.path.starts_with("lockscreen.transition[");
       });
-      if (warnings != 2) {
-        fail("lockscreen.transition: invalid entries were not reported");
-      }
-    }
-    // Contributed test: legacy transition aliases (newan1..newan5) parse into canonical enums
-    {
-      auto t = toml::parse(R"(transition = ["newan1", "newan2", "newan3", "newan4", "newan5"])");
-      LockscreenConfig lockscreen{};
-      Diagnostics d;
-      readInto(t, lockscreen, lockscreenSchema(), "lockscreen", d);
-      const std::vector<LockscreenTransition> expected = {
-          LockscreenTransition::Vortex, LockscreenTransition::Pixel, LockscreenTransition::Diamond,
-          LockscreenTransition::Golden, LockscreenTransition::Melt,
-      };
-      if (lockscreen.transitions != expected) {
-        fail("lockscreen.transition: legacy newan1..newan5 aliases were not parsed correctly");
-      }
-      if (d.hasErrors() || !d.entries.empty()) {
-        fail("lockscreen.transition: legacy newan1..newan5 produced unexpected diagnostics warnings");
+      if (warnings != 3) {
+        fail("lockscreen.transition: invalid or incorrectly-cased entries were not reported");
       }
     }
     // Grace period is strictly opt-in: a config that never mentions the key keeps
