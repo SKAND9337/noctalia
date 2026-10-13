@@ -431,8 +431,9 @@ void main() {
                + cos(uv.x * 7.0 + 1.2) * 0.04;
 
     float drip = uv.y + wave;
-    float maxSpan = 1.0 + 0.115;
-    float edge = u_progress * (maxSpan + 2.0 * feather) - feather - 0.0575;
+    float waveAmplitude = 0.115;
+    float sweepSpan = 1.0 + 2.0 * waveAmplitude;
+    float edge = u_progress * (sweepSpan + 2.0 * feather) - waveAmplitude - feather;
     float factor = smoothstep(edge - feather, edge + feather, drip);
     gl_FragColor = mix(color2, color1, factor);
 }

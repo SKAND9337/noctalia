@@ -205,8 +205,9 @@ float melt_coverage(vec2 uv, float progress, float smoothness) {
                + cos(uv.x * 7.0 + 1.2) * 0.04;
 
     float drip = uv.y + wave;
-    float max_span = 1.0 + 0.115;
-    float edge = progress * (max_span + 2.0 * feather) - feather - 0.0575;
+    float wave_amplitude = 0.115;
+    float sweep_span = 1.0 + 2.0 * wave_amplitude;
+    float edge = progress * (sweep_span + 2.0 * feather) - wave_amplitude - feather;
     return smoothstep(edge - feather, edge + feather, drip);
 }
 
