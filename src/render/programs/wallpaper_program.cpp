@@ -487,6 +487,7 @@ void WallpaperProgram::ensureProgram(std::size_t index) const {
       break;
     }
   } catch (const std::exception& e) {
+    m_programs[index].program.destroy();
     m_failed[index] = true;
     kLog.error("failed to compile wallpaper shader for transition {}: {}", index, e.what());
     if (index != static_cast<std::size_t>(WallpaperTransition::Fade)) {
