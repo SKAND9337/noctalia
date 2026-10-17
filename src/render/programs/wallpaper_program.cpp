@@ -286,7 +286,6 @@ void main() {
 }
 )";
 
-  // Contributed section: custom wallpaper transition shaders (Vortex, Pixel, Diamond, Golden, Melt)
   constexpr char kVortexFragment[] = R"(
 uniform float u_centerX;
 uniform float u_centerY;
@@ -446,7 +445,6 @@ void WallpaperProgram::ensureInitialized() {
   ensureProgram(static_cast<std::size_t>(WallpaperTransition::Fade));
 }
 
-// Contributed section: lazy compilation and safe fallback for wallpaper transition shaders
 void WallpaperProgram::ensureProgram(std::size_t index) const {
   if (index >= kTransitionCount || m_programs[index].program.isValid() || m_failed[index]) {
     return;
@@ -570,7 +568,7 @@ void WallpaperProgram::draw(const WallpaperDrawParams& p) const {
   }
   ensureProgram(idx);
   if (!m_programs[idx].program.isValid()) {
-    // Contributed: fall back safely to Fade if requested transition failed to compile
+    // The requested transition failed to compile; Fade is the fallback.
     idx = static_cast<std::size_t>(WallpaperTransition::Fade);
     ensureProgram(idx);
     if (!m_programs[idx].program.isValid()) {

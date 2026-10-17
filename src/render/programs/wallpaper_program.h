@@ -26,7 +26,6 @@ public:
   void draw(const WallpaperDrawParams& params) const;
 
 private:
-  // Contributed: expanded transition count to 11 for custom animations (Vortex, Pixel, Diamond, Golden, Melt)
   static constexpr std::size_t kTransitionCount = 11;
 
   struct ProgramData {
@@ -71,6 +70,6 @@ private:
   void initProgram(std::size_t index, const char* fragSource) const;
 
   mutable std::array<ProgramData, kTransitionCount> m_programs;
-  // Contributed: track failed compilations to prevent retry/log spam loops
+  // Transitions whose shader failed to build; not retried until destroy/abandon.
   mutable std::array<bool, kTransitionCount> m_failed{};
 };

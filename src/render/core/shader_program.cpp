@@ -50,7 +50,6 @@ void ShaderProgram::create(const char* vertexSource, const char* fragmentSource)
 
   const GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
   GLuint fragmentShader = 0;
-  // Contributed: clean up vertexShader if fragment compilation throws
   try {
     fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
   } catch (...) {

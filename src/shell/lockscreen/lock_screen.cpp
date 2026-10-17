@@ -65,7 +65,6 @@ namespace {
       return LockscreenTransitionKind::Zoom;
     case LockscreenTransition::Honeycomb:
       return LockscreenTransitionKind::Honeycomb;
-    // Contributed section: custom transition kind mappings (Vortex, Pixel, Diamond, Golden, Melt)
     case LockscreenTransition::Vortex:
       return LockscreenTransitionKind::Vortex;
     case LockscreenTransition::Pixel:
@@ -939,7 +938,6 @@ void LockScreen::chooseTransition() {
     m_transitionParams.centerX = Random::randomFloat(0.2F, 0.8F);
     m_transitionParams.centerY = Random::randomFloat(0.2F, 0.8F);
     break;
-  // Contributed section: custom transition parameter randomization (Vortex, Pixel, Diamond, Golden, Melt)
   case LockscreenTransition::Vortex:
     m_transitionParams.centerX = Random::randomFloat(0.2F, 0.8F);
     m_transitionParams.centerY = Random::randomFloat(0.2F, 0.8F);

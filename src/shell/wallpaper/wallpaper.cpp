@@ -99,7 +99,6 @@ namespace {
       params.centerX = randomFloat(0.2F, 0.8F);
       params.centerY = randomFloat(0.2F, 0.8F);
       break;
-    // Contributed section: custom transition animation parameter randomization (Vortex, Pixel, Diamond, Golden, Melt)
     case WallpaperTransition::Vortex:
       params.centerX = randomFloat(0.2F, 0.8F);
       params.centerY = randomFloat(0.2F, 0.8F);
