@@ -1,14 +1,11 @@
 #include "render/programs/wallpaper_program.h"
 
-#include "core/log.h"
 #include "render/programs/wallpaper_sampling_glsl.h"
 
 #include <stdexcept>
 #include <string>
 
 namespace {
-
-  constexpr Logger kLog("render.wallpaper");
 
   constexpr char kVertexShader[] = R"(
 precision highp float;
@@ -441,76 +438,36 @@ void main() {
 } // namespace
 
 void WallpaperProgram::ensureInitialized() {
-  // Eagerly initialize only the default Fade program; all others compile lazily on demand
-  ensureProgram(static_cast<std::size_t>(WallpaperTransition::Fade));
-}
-
-void WallpaperProgram::ensureProgram(std::size_t index) const {
-  if (index >= kTransitionCount || m_programs[index].program.isValid() || m_failed[index]) {
+  if (m_programs[0].program.isValid()) {
     return;
   }
 
-  try {
-    switch (static_cast<WallpaperTransition>(index)) {
-    case WallpaperTransition::Fade:
-      initProgram(index, kFadeFragment);
-      break;
-    case WallpaperTransition::Wipe:
-      initProgram(index, kWipeFragment);
-      break;
-    case WallpaperTransition::Disc:
-      initProgram(index, kDiscFragment);
-      break;
-    case WallpaperTransition::Stripes:
-      initProgram(index, kStripesFragment);
-      break;
-    case WallpaperTransition::Zoom:
-      initProgram(index, kZoomFragment);
-      break;
-    case WallpaperTransition::Honeycomb:
-      initProgram(index, kHoneycombFragment);
-      break;
-    case WallpaperTransition::Vortex:
-      initProgram(index, kVortexFragment);
-      break;
-    case WallpaperTransition::Pixel:
-      initProgram(index, kPixelFragment);
-      break;
-    case WallpaperTransition::Diamond:
-      initProgram(index, kDiamondFragment);
-      break;
-    case WallpaperTransition::Golden:
-      initProgram(index, kGoldenFragment);
-      break;
-    case WallpaperTransition::Melt:
-      initProgram(index, kMeltFragment);
-      break;
-    }
-  } catch (const std::exception& e) {
-    m_programs[index].program.destroy();
-    m_failed[index] = true;
-    kLog.error("failed to compile wallpaper shader for transition {}: {}", index, e.what());
-    if (index != static_cast<std::size_t>(WallpaperTransition::Fade)) {
-      ensureProgram(static_cast<std::size_t>(WallpaperTransition::Fade));
-    }
-  }
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Fade), kFadeFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Wipe), kWipeFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Disc), kDiscFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Stripes), kStripesFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Zoom), kZoomFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Honeycomb), kHoneycombFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Vortex), kVortexFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Pixel), kPixelFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Diamond), kDiamondFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Golden), kGoldenFragment);
+  initProgram(static_cast<std::size_t>(WallpaperTransition::Melt), kMeltFragment);
 }
 
 void WallpaperProgram::destroy() {
-  m_failed.fill(false);
   for (auto& pd : m_programs) {
     pd.program.destroy();
   }
 }
 
 void WallpaperProgram::abandon() noexcept {
-  m_failed.fill(false);
   for (auto& pd : m_programs) {
     pd.program.abandon();
   }
 }
 
-void WallpaperProgram::initProgram(std::size_t index, const char* fragSource) const {
+void WallpaperProgram::initProgram(std::size_t index, const char* fragSource) {
   const std::string fullFrag =
       std::string(kCommonPrefix) + std::string(wallpaper_shader::kSamplingSource) + kCommonSuffix + fragSource;
 
@@ -564,17 +521,8 @@ void WallpaperProgram::initProgram(std::size_t index, const char* fragSource) co
 
 void WallpaperProgram::draw(const WallpaperDrawParams& p) const {
   auto idx = static_cast<std::size_t>(p.transition);
-  if (idx >= kTransitionCount || p.quadWidth <= 0.0F || p.quadHeight <= 0.0F) {
+  if (idx >= kTransitionCount || !m_programs[idx].program.isValid() || p.quadWidth <= 0.0F || p.quadHeight <= 0.0F) {
     return;
-  }
-  ensureProgram(idx);
-  if (!m_programs[idx].program.isValid()) {
-    // The requested transition failed to compile; Fade is the fallback.
-    idx = static_cast<std::size_t>(WallpaperTransition::Fade);
-    ensureProgram(idx);
-    if (!m_programs[idx].program.isValid()) {
-      return;
-    }
   }
   if (p.from.kind == WallpaperSourceKind::Image && p.from.texture == 0) {
     return;

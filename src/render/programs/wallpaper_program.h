@@ -66,10 +66,7 @@ private:
     GLint cellSizeLoc = -1;
   };
 
-  void ensureProgram(std::size_t index) const;
-  void initProgram(std::size_t index, const char* fragSource) const;
+  void initProgram(std::size_t index, const char* fragSource);
 
-  mutable std::array<ProgramData, kTransitionCount> m_programs;
-  // Transitions whose shader failed to build; not retried until destroy/abandon.
-  mutable std::array<bool, kTransitionCount> m_failed{};
+  std::array<ProgramData, kTransitionCount> m_programs;
 };
